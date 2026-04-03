@@ -1310,29 +1310,39 @@
   // ── Language switcher ──────────────────────────────────────────
   let currentLang = localStorage.getItem('lang') || 'en';
 
+  // Save original English content before any switching
+  const origHTML = new Map();
+  const origPH   = new Map();
+  const origOpts = new Map();
+
+  function initLangMaps() {
+    document.querySelectorAll('[data-ru]').forEach(el => {
+      origHTML.set(el, el.innerHTML);
+    });
+    document.querySelectorAll('[data-ru-ph]').forEach(el => {
+      origPH.set(el, el.placeholder);
+    });
+    document.querySelectorAll('select option[data-ru]').forEach(opt => {
+      origOpts.set(opt, opt.textContent);
+    });
+  }
+
   function setLang(lang) {
     currentLang = lang;
     localStorage.setItem('lang', lang);
     document.documentElement.lang = lang;
 
-    // innerHTML elements
-    document.querySelectorAll('[data-en][data-ru]').forEach(el => {
-      el.innerHTML = lang === 'ru' ? el.dataset.ru : el.dataset.en;
-    });
-
-    // placeholder attributes
-    document.querySelectorAll('[data-en-ph][data-ru-ph]').forEach(el => {
-      el.placeholder = lang === 'ru' ? el.dataset.ruPh : el.dataset.enPh;
-    });
-
-    // select options
-    document.querySelectorAll('select option[data-en][data-ru]').forEach(opt => {
-      opt.textContent = lang === 'ru' ? opt.dataset.ru : opt.dataset.en;
-    });
+    if (lang === 'ru') {
+      origHTML.forEach((_, el) => { el.innerHTML = el.dataset.ru; });
+      origPH.forEach((_, el)   => { el.placeholder = el.dataset.ruPh; });
+      origOpts.forEach((_, opt) => { opt.textContent = opt.dataset.ru; });
+    } else {
+      origHTML.forEach((html, el) => { el.innerHTML = html; });
+      origPH.forEach((ph, el)     => { el.placeholder = ph; });
+      origOpts.forEach((txt, opt) => { opt.textContent = txt; });
+    }
 
     document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'RU';
-
-    // update chat system prompt language hint
     chatHistory[0].content = lang === 'ru' ? SYSTEM_PROMPT_RU : SYSTEM_PROMPT_EN;
   }
 
@@ -1455,7 +1465,9 @@ Your job: help visitors understand what Alexander can do for them, estimate cost
   }
 
   // Init language
-  setLang(currentLang);
+  initLangMaps();
+  if (currentLang === 'ru') setLang('ru');
+  else document.getElementById('langBtn').textContent = 'RU';
 </script>
 </body>
 </html>
