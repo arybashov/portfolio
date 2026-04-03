@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alexander Rybashov — VFX & AI Video</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --deep: #0d0d0f;
+    --surface: #111114;
+    --border: rgba(255,255,255,0.07);
+    --text: #e8e6e0;
+    --muted: #7a7870;
+    --accent: #c8a96e;
+    --accent2: #7eb8c4;
+    --white: #f5f3ee;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* Custom cursor */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(200,169,110,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.18s ease, width 0.2s, height 0.2s, border-color 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring.hover { width: 52px; height: 52px; border-color: var(--accent); }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.35;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 48px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.9) 0%, transparent 100%);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    color: var(--white);
+    text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 36px; }
+  .nav-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.25s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 72px;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 60% 40%, rgba(126,184,196,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 80% at 20% 70%, rgba(200,169,110,0.04) 0%, transparent 50%),
+      linear-gradient(160deg, #0a0a0c 0%, #080810 50%, #07080a 100%);
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(56px, 8vw, 112px);
+    font-weight: 300;
+    line-height: 0.92;
+    color: var(--white);
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    opacity: 0;
+    animation: fadeUp 1s 0.8s forwards;
+  }
+
+  .hero-sub {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    max-width: 400px;
+    line-height: 1.7;
+  }
+
+  .hero-tags {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    transition: all 0.25s;
+  }
+  .tag:hover { border-color: var(--accent); color: var(--accent); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s forwards;
+  }
+  .scroll-hint span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* REEL */
+  .reel-section {
+    padding: 0 48px 120px;
+    position: relative;
+  }
+  .reel-inner {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--surface);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .reel-inner video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .reel-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 60%, rgba(8,8,8,0.8) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .play-btn {
+    width: 72px; height: 72px;
+    border: 1px solid rgba(200,169,110,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    transition: all 0.3s;
+    background: rgba(200,169,110,0.05);
+  }
+  .play-btn:hover {
+    background: rgba(200,169,110,0.12);
+    border-color: var(--accent);
+    transform: scale(1.08);
+  }
+  .play-btn svg { margin-left: 4px; }
+
+  /* SECTION COMMON */
+  section { position: relative; }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 64px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300;
+    color: var(--white);
+    letter-spacing: -0.01em;
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* SERVICES */
+  .services {
+    padding: 120px 48px;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .service-card {
+    background: var(--deep);
+    padding: 48px 40px;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .service-card:hover { background: var(--surface); }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: block;
+  }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .service-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 36px;
+  }
+  .service-includes {
+    list-style: none;
+    margin-bottom: 40px;
+  }
+  .service-includes li {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .service-includes li::before {
+    content: '→';
+    color: var(--accent);
+    font-size: 10px;
+  }
+  .service-price {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .price-from {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .price-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 40px;
+    font-weight: 300;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .price-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* CASES */
+  .cases {
+    padding: 120px 48px;
+  }
+  .cases-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+
+  .case-item {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr auto;
+    align-items: center;
+    gap: 40px;
+    padding: 36px 40px;
+    background: var(--black);
+    transition: background 0.25s;
+    cursor: none;
+  }
+  .case-item:hover { background: var(--surface); }
+
+  .case-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--border);
+    letter-spacing: 0.1em;
+  }
+  .case-client {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--white);
+  }
+  .case-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .case-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .case-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    border: 1px solid rgba(126,184,196,0.25);
+    padding: 4px 10px;
+  }
+
+  /* ABOUT */
+  .about {
+    padding: 120px 48px;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .about-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 120px;
+    align-items: start;
+  }
+  .about-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(22px, 2.5vw, 32px);
+    font-weight: 300;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .about-text strong {
+    color: var(--accent);
+    font-weight: 400;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    align-self: center;
+  }
+  .stat {
+    background: var(--deep);
+    padding: 36px 32px;
+    transition: background 0.25s;
+  }
+  .stat:hover { background: var(--surface); }
+  .stat-value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* STACK */
+  .stack {
+    padding: 120px 48px;
+  }
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .stack-item {
+    background: var(--black);
+    padding: 32px;
+    transition: background 0.25s;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .stack-item:hover { background: var(--surface); }
+  .stack-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 0.02em;
+  }
+  .stack-role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .stack-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 120px 48px 80px;
+    background: var(--deep);
+    border-top: 1px solid var(--border);
+  }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .contact-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .contact-tagline em { font-style: italic; color: var(--accent); }
+  .contact-sub {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+  .contact-links { display: flex; flex-direction: column; gap: 16px; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    transition: all 0.25s;
+    color: var(--text);
+  }
+  .contact-link:hover { border-color: var(--accent); background: rgba(200,169,110,0.03); }
+  .contact-link-icon {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    text-transform: uppercase;
+    min-width: 80px;
+  }
+  .contact-link-text { font-size: 13px; color: var(--muted); }
+
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .form-input, .form-select, .form-textarea {
+    background: var(--black);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.25s;
+    resize: none;
+    appearance: none;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: var(--accent);
+  }
+  .form-select option { background: var(--black); }
+  .form-submit {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px 40px;
+    cursor: none;
+    transition: all 0.3s;
+    align-self: flex-start;
+  }
+  .form-submit:hover {
+    background: var(--accent);
+    color: var(--black);
+  }
+
+  /* AI CHAT SECTION */
+  .ai-chat-section {
+    padding: 120px 48px;
+    background: var(--black);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-chat-inner {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: start;
+  }
+  .ai-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+  }
+  .ai-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+  .ai-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4vw, 56px);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .ai-title em { font-style: italic; color: var(--accent); }
+  .ai-sub {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 36px;
+  }
+  .ai-hints {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .ai-hint {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    padding: 12px 16px;
+    text-align: left;
+    cursor: none;
+    transition: all 0.25s;
+  }
+  .ai-hint:hover { border-color: var(--accent); color: var(--accent); background: rgba(200,169,110,0.03); }
+
+  .ai-chat-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 480px;
+  }
+  .ai-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+  .ai-msg { display: flex; gap: 14px; align-items: flex-start; }
+  .ai-msg--user { flex-direction: row-reverse; }
+  .ai-msg-avatar {
+    width: 32px; height: 32px;
+    background: var(--deep);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+  .ai-msg--user .ai-msg-avatar { background: rgba(200,169,110,0.08); border-color: rgba(200,169,110,0.2); }
+  .ai-msg-bubble {
+    background: var(--deep);
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.65;
+    max-width: 85%;
+  }
+  .ai-msg--user .ai-msg-bubble {
+    background: rgba(200,169,110,0.06);
+    border-color: rgba(200,169,110,0.15);
+    color: var(--white);
+  }
+  .ai-msg-bubble.typing {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    padding: 18px;
+  }
+  .ai-msg-bubble.typing span {
+    width: 6px; height: 6px;
+    background: var(--muted);
+    border-radius: 50%;
+    animation: typingBounce 1.2s ease-in-out infinite;
+  }
+  .ai-msg-bubble.typing span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-msg-bubble.typing span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+  .ai-input-row {
+    display: flex;
+    border-top: 1px solid var(--border);
+  }
+  .ai-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    padding: 18px 20px;
+  }
+  .ai-input::placeholder { color: var(--muted); }
+  .ai-send {
+    background: transparent;
+    border: none;
+    border-left: 1px solid var(--border);
+    color: var(--accent);
+    padding: 0 20px;
+    cursor: none;
+    transition: background 0.2s;
+  }
+  .ai-send:hover { background: rgba(200,169,110,0.06); }
+
+  @media (max-width: 900px) {
+    .ai-chat-section { padding: 80px 24px; }
+    .ai-chat-inner { grid-template-columns: 1fr; gap: 40px; }
+    .ai-chat-box { height: 400px; }
+    .ai-send { cursor: auto; }
+    .ai-hint { cursor: pointer; }
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--black);
+  }
+  footer p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+  .footer-links { display: flex; gap: 24px; }
+  .footer-links a {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--accent); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 24px 56px; }
+    .hero-bottom { flex-direction: column; gap: 24px; align-items: flex-start; }
+    .hero-tags { justify-content: flex-start; }
+    .reel-section, .services, .cases, .about, .stack, .contact { padding-left: 24px; padding-right: 24px; }
+    .services-grid { grid-template-columns: 1fr; }
+    .about-inner { grid-template-columns: 1fr; gap: 48px; }
+    .stack-grid { grid-template-columns: repeat(2, 1fr); }
+    .contact-inner { grid-template-columns: 1fr; }
+    .case-item { grid-template-columns: 1fr; gap: 12px; }
+    .case-tags { justify-content: flex-start; }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Alexander <span>Rybashov</span></a>
+  <div class="nav-links">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-eyebrow">VFX Artist · AI Video · Scientific Visualization</div>
+  <h1 class="hero-title">
+    Visual<br>
+    <em>storytelling</em><br>
+    beyond limits
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-sub">20+ years crafting complex visual worlds — from particle simulations to AI-generated cinema. Houdini, Unreal Engine, and cutting-edge AI tools in one pipeline.</p>
+    <div class="hero-tags">
+      <span class="tag">Houdini VFX</span>
+      <span class="tag">Unreal Engine</span>
+      <span class="tag">AI Video</span>
+      <span class="tag">Blender</span>
+      <span class="tag">Nuke</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- REEL -->
+<section class="reel-section" id="work">
+  <div class="reel-inner reveal">
+    <video autoplay muted loop playsinline poster="">
+      <!-- Replace src with actual demo reel URL -->
+    </video>
+    <div class="reel-overlay">
+      <div class="play-btn">
+        <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+          <path d="M1 1L17 10L1 19V1Z" stroke="#c8a96e" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Services & Pricing</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <span class="service-icon">01 / Promo</span>
+      <h3 class="service-name">Promo<br>Video</h3>
+      <p class="service-desc">Cinematic product and brand films that make complex technologies tangible. From drones to satellites — if it moves, I'll make it breathtaking.</p>
+      <ul class="service-includes">
+        <li>Concept & storyboard</li>
+        <li>3D animation & VFX</li>
+        <li>Compositing & color grade</li>
+        <li>Final delivery up to 4K</li>
+      </ul>
+      <div class="service-price">
+        <span class="price-from">Starting from</span>
+        <span class="price-value">€2 500</span>
+        <span class="price-note">per 30–60 sec</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-icon">02 / Science</span>
+      <h3 class="service-name">Scientific<br>Visualization</h3>
+      <p class="service-desc">Accurate, publication-ready 3D models of complex scientific phenomena. Trusted by leading universities and research institutes worldwide.</p>
+      <ul class="service-includes">
+        <li>Research-accurate modeling</li>
+        <li>Procedural Houdini simulations</li>
+        <li>Animation & rendering</li>
+        <li>Educational materials</li>
+      </ul>
+      <div class="service-price">
+        <span class="price-from">Starting from</span>
+        <span class="price-value">€3 000</span>
+        <span class="price-note">per project</span>
+      </div>
+    </div>
+
+    <div class="service-card">
+      <span class="service-icon">03 / AI</span>
+      <h3 class="service-name">AI Video<br>Production</h3>
+      <p class="service-desc">Next-generation content creation using Sora, Runway, and KING — combined with professional post-production for truly cinematic results.</p>
+      <ul class="service-includes">
+        <li>AI generation & prompt engineering</li>
+        <li>Professional compositing</li>
+        <li>Motion graphics & titles</li>
+        <li>Series & campaign content</li>
+      </ul>
+      <div class="service-price">
+        <span class="price-from">Starting from</span>
+        <span class="price-value">€1 200</span>
+        <span class="price-note">per video</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="reveal" style="margin-top:24px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.1em;">
+    * All projects are quoted individually after brief. Prices above are entry-level estimates.
+  </p>
+</section>
+
+<!-- CASES -->
+<section class="cases">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Selected Work</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="cases-list reveal">
+    <div class="case-item">
+      <span class="case-num">001</span>
+      <span class="case-client">Roscosmos</span>
+      <p class="case-desc">Philosophical film "Inner Cosmos" — a visual journey from observing the Universe to human consciousness. ChatGPT, Sora, King, Runway.</p>
+      <div class="case-tags">
+        <span class="case-tag">AI Video</span>
+        <span class="case-tag">Concept Film</span>
+      </div>
+    </div>
+    <div class="case-item">
+      <span class="case-num">002</span>
+      <span class="case-client">Elavia Drones</span>
+      <p class="case-desc">Promo reel showcasing passenger drone design and urban flight environments. Unreal Engine, Houdini, Blender, DaVinci Resolve.</p>
+      <div class="case-tags">
+        <span class="case-tag">Promo Film</span>
+        <span class="case-tag">Unreal Engine</span>
+        <span class="case-tag">VFX</span>
+      </div>
+    </div>
+    <div class="case-item">
+      <span class="case-num">003</span>
+      <span class="case-client">University of Toronto</span>
+      <p class="case-desc">High-fidelity solar surface visualization for astrophysics research — granulation, prominences, solar flares via procedural Houdini simulation.</p>
+      <div class="case-tags">
+        <span class="case-tag">Scientific Viz</span>
+        <span class="case-tag">Houdini</span>
+      </div>
+    </div>
+    <div class="case-item">
+      <span class="case-num">004</span>
+      <span class="case-client">Keldysh Institute</span>
+      <p class="case-desc">Graphic models for computational mathematics research. Long-term collaboration with one of Russia's leading scientific institutions.</p>
+      <div class="case-tags">
+        <span class="case-tag">Scientific Viz</span>
+        <span class="case-tag">Research</span>
+      </div>
+    </div>
+    <div class="case-item">
+      <span class="case-num">005</span>
+      <span class="case-client">Orlyonok Center</span>
+      <p class="case-desc">Title sequence for All-Russian Youth Center promo film. Particle simulations in Houdini forming dynamic logo animation.</p>
+      <div class="case-tags">
+        <span class="case-tag">Motion Graphics</span>
+        <span class="case-tag">Particles</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI CHAT -->
+<section class="ai-chat-section" id="chat">
+  <div class="ai-chat-inner">
+    <div class="ai-chat-left reveal">
+      <div class="ai-label">
+        <span class="ai-dot"></span>
+        <span>AI Assistant — powered by Claude</span>
+      </div>
+      <h2 class="ai-title">Not sure what<br>you <em>need?</em></h2>
+      <p class="ai-sub">Describe your project idea and I'll tell you what's possible, what it might cost, and how to get started. No forms, no waiting.</p>
+      <div class="ai-hints">
+        <button class="ai-hint" onclick="sendHint(this)">What can you do for a drone startup?</button>
+        <button class="ai-hint" onclick="sendHint(this)">I need a 60-sec promo, what's the price?</button>
+        <button class="ai-hint" onclick="sendHint(this)">Can you visualize scientific data?</button>
+        <button class="ai-hint" onclick="sendHint(this)">What's the difference between AI video and VFX?</button>
+      </div>
+    </div>
+    <div class="ai-chat-right reveal">
+      <div class="ai-chat-box">
+        <div class="ai-messages" id="aiMessages">
+          <div class="ai-msg ai-msg--bot">
+            <div class="ai-msg-avatar">AR</div>
+            <div class="ai-msg-bubble">Hi! I'm Alexander's AI assistant. Tell me about your project — I'll help figure out the right approach, timeline, and budget. What are you working on?</div>
+          </div>
+        </div>
+        <div class="ai-input-row">
+          <input class="ai-input" id="aiInput" type="text" placeholder="Describe your project..." autocomplete="off" onkeydown="if(event.key==='Enter') sendMessage()">
+          <button class="ai-send" onclick="sendMessage()">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M1 8H15M15 8L9 2M15 8L9 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">About</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="about-inner">
+    <div class="about-text reveal">
+      I've spent over two decades at the intersection of <strong>art and technology</strong> — building visual systems for games, science, and screen. My work ranges from indie game development to <strong>government and academic commissions</strong>. I don't just execute briefs; I bring technical depth that most visual artists simply don't have. Houdini, Unreal Engine, Python scripting, machine learning — it's one pipeline, not a patchwork of freelancers. Every frame I deliver is the result of <strong>full ownership</strong> from concept to final render.
+    </div>
+    <div class="about-stats reveal">
+      <div class="stat">
+        <div class="stat-value">20+</div>
+        <div class="stat-label">Years in<br>computer graphics</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">3</div>
+        <div class="stat-label">Major scientific<br>institutions</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">8+</div>
+        <div class="stat-label">Professional<br>tools mastered</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">∞</div>
+        <div class="stat-label">Full cycle —<br>concept to delivery</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STACK -->
+<section class="stack">
+  <div class="section-header reveal">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Tech Stack</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="stack-grid reveal">
+    <div class="stack-item">
+      <div class="stack-name">Houdini</div>
+      <div class="stack-role">VFX · Simulation · Procedural</div>
+      <div class="stack-desc">Primary tool for complex simulations — fire, water, smoke, destruction, particles. Used across film, games, and scientific projects.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">Unreal Engine</div>
+      <div class="stack-role">Real-time · Games · VR</div>
+      <div class="stack-desc">High-quality real-time rendering, materials, shaders, interactive VFX. Games and immersive experiences.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">Blender</div>
+      <div class="stack-role">Modeling · Animation · Render</div>
+      <div class="stack-desc">Versatile tool for 3D modeling, sculpting, animation and rendering. Speed and flexibility for asset creation.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">Nuke</div>
+      <div class="stack-role">Compositing · CGI Integration</div>
+      <div class="stack-desc">Professional compositing — complex scene assembly, CGI integration, precise color correction.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">After Effects</div>
+      <div class="stack-role">Motion Graphics · Post</div>
+      <div class="stack-desc">Motion graphics, title sequences, promo reels with attention to every detail.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">AI Tools</div>
+      <div class="stack-role">Sora · Runway · KING</div>
+      <div class="stack-desc">Cutting-edge AI video generation combined with professional compositing for cinematic results.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">Fusion 360</div>
+      <div class="stack-role">Parametric · Technical</div>
+      <div class="stack-desc">Precision technical modeling and prototyping for engineering-accurate visualizations.</div>
+    </div>
+    <div class="stack-item">
+      <div class="stack-name">Python</div>
+      <div class="stack-role">Scripting · Automation</div>
+      <div class="stack-desc">Custom tools and pipeline automation — optimizing workflows across all applications.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="section-header reveal">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Get in Touch</h2>
+    <div class="section-line"></div>
+  </div>
+
+  <div class="contact-inner">
+    <div class="reveal">
+      <h3 class="contact-tagline">Let's create something <em>extraordinary</em></h3>
+      <p class="contact-sub">Tell me about your project — what it is, when you need it, and roughly what budget you're working with. I'll respond within 24 hours with a realistic assessment.</p>
+      <div class="contact-links">
+        <a href="https://t.me/arybashov" class="contact-link" target="_blank">
+          <span class="contact-link-icon">Telegram</span>
+          <span class="contact-link-text">@arybashov — fastest response</span>
+        </a>
+        <a href="https://alexanderrybashov.artstation.com/" class="contact-link" target="_blank">
+          <span class="contact-link-icon">ArtStation</span>
+          <span class="contact-link-text">alexanderrybashov.artstation.com</span>
+        </a>
+        <a href="https://www.youtube.com/channel/UChwymOtxgOrdCRTa1yj_3QA" class="contact-link" target="_blank">
+          <span class="contact-link-icon">YouTube</span>
+          <span class="contact-link-text">Full portfolio & reels</span>
+        </a>
+      </div>
+    </div>
+
+    <form class="contact-form reveal" onsubmit="handleSubmit(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input class="form-input" type="text" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" placeholder="your@email.com" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Project type</label>
+        <select class="form-select">
+          <option value="">Select type...</option>
+          <option>Promo Video</option>
+          <option>Scientific Visualization</option>
+          <option>AI Video Production</option>
+          <option>Game Development</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Budget range</label>
+        <select class="form-select">
+          <option value="">Select budget...</option>
+          <option>€1 000 – €3 000</option>
+          <option>€3 000 – €7 000</option>
+          <option>€7 000 – €15 000</option>
+          <option>€15 000+</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell me about your project</label>
+        <textarea class="form-textarea" rows="5" placeholder="Describe your project, goals, timeline..."></textarea>
+      </div>
+      <button type="submit" class="form-submit">Send Message →</button>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <p>© 2025 Alexander Rybashov. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="https://t.me/arybashov" target="_blank">Telegram</a>
+    <a href="https://alexanderrybashov.artstation.com/" target="_blank">ArtStation</a>
+    <a href="https://www.youtube.com/channel/UChwymOtxgOrdCRTa1yj_3QA" target="_blank">YouTube</a>
+  </div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, .case-item, .service-card, .stack-item, .stat').forEach(el => {
+    el.addEventListener('mouseenter', () => ring.classList.add('hover'));
+    el.addEventListener('mouseleave', () => ring.classList.remove('hover'));
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // AI Chat
+  const SYSTEM_PROMPT = `You are an AI assistant on Alexander Rybashov's portfolio website. Alexander is a senior VFX artist and AI video specialist with 20+ years of experience.
+
+His services and pricing:
+- Promo Video (30-60 sec): from €2,500. Includes concept, 3D animation, VFX, compositing, up to 4K. Tools: Unreal Engine, Houdini, Blender, DaVinci.
+- Scientific Visualization: from €3,000. Accurate 3D models and simulations for research and education. Trusted by University of Toronto, Keldysh Institute.
+- AI Video Production: from €1,200 per video. Uses Sora, Runway, KING + professional post-production. Great for brands and agencies.
+
+Notable clients: Roscosmos, Elavia Drones, University of Toronto, Keldysh Institute of Applied Mathematics, Orlyonok Youth Center.
+
+Tech stack: Houdini (VFX, simulations), Unreal Engine (real-time, games, VR), Blender (modeling, animation), Nuke (compositing), After Effects (motion graphics), Fusion 360 (technical modeling), Python (scripting), AI tools (Sora, Runway, KING).
+
+Your job: help visitors understand what Alexander can do for them, estimate costs, and encourage them to reach out via Telegram (@arybashov). Be concise, friendly, and professional. Keep answers under 100 words unless a detailed breakdown is needed. Always end with an invitation to discuss further.`;
+
+  // chatHistory in OpenAI format — system message always first
+  let chatHistory = [
+    { role: 'system', content: SYSTEM_PROMPT }
+  ];
+
+  async function sendMessage() {
+    const input = document.getElementById('aiInput');
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    appendMessage('user', text);
+    chatHistory.push({ role: 'user', content: text });
+    const typingId = appendTyping();
+    try {
+      // PROXY_URL — your Cloudflare Worker URL (see README)
+      const PROXY_URL = 'https://YOUR_WORKER.YOUR_SUBDOMAIN.workers.dev';
+      const res = await fetch(PROXY_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'openrouter/auto',   // auto-selects best free model
+          max_tokens: 300,
+          messages: chatHistory       // OpenAI format: system + user/assistant
+        })
+      });
+      const data = await res.json();
+      removeTyping(typingId);
+      // OpenAI-compatible response format
+      const reply = data.choices?.[0]?.message?.content
+        || "I couldn't process that. Please reach out directly via Telegram @arybashov.";
+      appendMessage('bot', reply);
+      chatHistory.push({ role: 'assistant', content: reply });
+    } catch(e) {
+      removeTyping(typingId);
+      appendMessage('bot', 'Something went wrong. Please reach out directly via Telegram: @arybashov');
+    }
+  }
+
+  function sendHint(btn) {
+    document.getElementById('aiInput').value = btn.textContent;
+    sendMessage();
+  }
+
+  function appendMessage(role, text) {
+    const msgs = document.getElementById('aiMessages');
+    const div = document.createElement('div');
+    div.className = `ai-msg ai-msg--${role === 'user' ? 'user' : 'bot'}`;
+    div.innerHTML = `
+      <div class="ai-msg-avatar">${role === 'user' ? 'YOU' : 'AR'}</div>
+      <div class="ai-msg-bubble">${text}</div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function appendTyping() {
+    const msgs = document.getElementById('aiMessages');
+    const id = 'typing-' + Date.now();
+    const div = document.createElement('div');
+    div.className = 'ai-msg ai-msg--bot';
+    div.id = id;
+    div.innerHTML = `<div class="ai-msg-avatar">AR</div><div class="ai-msg-bubble typing"><span></span><span></span><span></span></div>`;
+    msgs.appendChild(div);
+    msgs.scrollTop = msgs.scrollHeight;
+    return id;
+  }
+
+  function removeTyping(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+  }
+
+  // Form submit
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('.form-submit');
+    btn.textContent = 'Sent ✓';
+    btn.style.background = 'var(--accent)';
+    btn.style.color = 'var(--black)';
+    setTimeout(() => {
+      btn.textContent = 'Send Message →';
+      btn.style.background = '';
+      btn.style.color = '';
+      e.target.reset();
+    }, 3000);
+  }
+</script>
+</body>
+</html>
