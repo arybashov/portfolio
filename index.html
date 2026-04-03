@@ -85,6 +85,7 @@
     text-decoration: none;
   }
   .nav-logo span { color: var(--accent); }
+  .nav-right { display: flex; align-items: center; gap: 36px; }
   .nav-links { display: flex; gap: 36px; }
   .nav-links a {
     font-family: 'JetBrains Mono', monospace;
@@ -96,6 +97,21 @@
     transition: color 0.25s;
   }
   .nav-links a:hover { color: var(--accent); }
+
+  .lang-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    cursor: none;
+    transition: all 0.25s;
+  }
+  .lang-btn:hover { color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 900px) { .lang-btn { cursor: pointer; } }
 
   /* HERO */
   .hero {
@@ -868,11 +884,14 @@
 
 <nav>
   <a href="#" class="nav-logo">Alexander <span>Rybashov</span></a>
-  <div class="nav-links">
-    <a href="#work">Work</a>
-    <a href="#services">Services</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
+  <div class="nav-right">
+    <div class="nav-links">
+      <a href="#work" data-en="Work" data-ru="Работы">Work</a>
+      <a href="#services" data-en="Services" data-ru="Услуги">Services</a>
+      <a href="#about" data-en="About" data-ru="Обо мне">About</a>
+      <a href="#contact" data-en="Contact" data-ru="Контакт">Contact</a>
+    </div>
+    <button class="lang-btn" id="langBtn" onclick="toggleLang()">RU</button>
   </div>
 </nav>
 
@@ -880,14 +899,14 @@
 <section class="hero">
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
-  <div class="hero-eyebrow">VFX Artist · AI Video · Scientific Visualization</div>
-  <h1 class="hero-title">
+  <div class="hero-eyebrow" data-en="VFX Artist · AI Video · Scientific Visualization" data-ru="VFX Художник · AI Видео · Научная Визуализация">VFX Artist · AI Video · Scientific Visualization</div>
+  <h1 class="hero-title" data-en="Visual<br><em>storytelling</em><br>beyond limits" data-ru="Визуальный<br><em>сторителлинг</em><br>без границ">
     Visual<br>
     <em>storytelling</em><br>
     beyond limits
   </h1>
   <div class="hero-bottom">
-    <p class="hero-sub">20+ years crafting complex visual worlds — from particle simulations to AI-generated cinema. Houdini, Unreal Engine, and cutting-edge AI tools in one pipeline.</p>
+    <p class="hero-sub" data-en="20+ years crafting complex visual worlds — from particle simulations to AI-generated cinema. Houdini, Unreal Engine, and cutting-edge AI tools in one pipeline." data-ru="20+ лет создания сложных визуальных миров — от симуляций частиц до AI-кино. Houdini, Unreal Engine и передовые AI-инструменты в едином пайплайне.">20+ years crafting complex visual worlds — from particle simulations to AI-generated cinema. Houdini, Unreal Engine, and cutting-edge AI tools in one pipeline.</p>
     <div class="hero-tags">
       <span class="tag">Houdini VFX</span>
       <span class="tag">Unreal Engine</span>
@@ -898,7 +917,7 @@
   </div>
   <div class="scroll-hint">
     <div class="scroll-line"></div>
-    <span>Scroll</span>
+    <span data-en="Scroll" data-ru="Далее">Scroll</span>
   </div>
 </section>
 
@@ -922,64 +941,66 @@
 <section class="services" id="services">
   <div class="section-header reveal">
     <span class="section-num">01</span>
-    <h2 class="section-title">Services & Pricing</h2>
+    <h2 class="section-title" data-en="Services &amp; Pricing" data-ru="Услуги и цены">Services &amp; Pricing</h2>
     <div class="section-line"></div>
   </div>
 
   <div class="services-grid reveal">
     <div class="service-card">
       <span class="service-icon">01 / Promo</span>
-      <h3 class="service-name">Promo<br>Video</h3>
-      <p class="service-desc">Cinematic product and brand films that make complex technologies tangible. From drones to satellites — if it moves, I'll make it breathtaking.</p>
+      <h3 class="service-name" data-en="Promo<br>Video" data-ru="Промо-<br>ролик">Promo<br>Video</h3>
+      <p class="service-desc" data-en="Cinematic product and brand films that make complex technologies tangible. From drones to satellites — if it moves, I'll make it breathtaking." data-ru="Кинематографические продуктовые и брендовые фильмы, делающие сложные технологии осязаемыми. От дронов до спутников — если это движется, я сделаю это захватывающим.">Cinematic product and brand films that make complex technologies tangible. From drones to satellites — if it moves, I'll make it breathtaking.</p>
       <ul class="service-includes">
-        <li>Concept & storyboard</li>
-        <li>3D animation & VFX</li>
-        <li>Compositing & color grade</li>
-        <li>Final delivery up to 4K</li>
+        <li data-en="Concept &amp; storyboard" data-ru="Концепция и сторибоард">Concept &amp; storyboard</li>
+        <li data-en="3D animation &amp; VFX" data-ru="3D анимация и VFX">3D animation &amp; VFX</li>
+        <li data-en="Compositing &amp; color grade" data-ru="Композитинг и цветокоррекция">Compositing &amp; color grade</li>
+        <li data-en="Final delivery up to 4K" data-ru="Финальная сдача до 4K">Final delivery up to 4K</li>
       </ul>
       <div class="service-price">
-        <span class="price-from">Starting from</span>
+        <span class="price-from" data-en="Starting from" data-ru="От">Starting from</span>
         <span class="price-value">€2 500</span>
-        <span class="price-note">per 30–60 sec</span>
+        <span class="price-note" data-en="per 30–60 sec" data-ru="за 30–60 сек">per 30–60 sec</span>
       </div>
     </div>
 
     <div class="service-card">
       <span class="service-icon">02 / Science</span>
-      <h3 class="service-name">Scientific<br>Visualization</h3>
-      <p class="service-desc">Accurate, publication-ready 3D models of complex scientific phenomena. Trusted by leading universities and research institutes worldwide.</p>
+      <h3 class="service-name" data-en="Scientific<br>Visualization" data-ru="Научная<br>визуализация">Scientific<br>Visualization</h3>
+      <p class="service-desc" data-en="Accurate, publication-ready 3D models of complex scientific phenomena. Trusted by leading universities and research institutes worldwide." data-ru="Точные, готовые к публикации 3D-модели сложных научных явлений. Доверяют ведущие университеты и научные институты по всему миру.">Accurate, publication-ready 3D models of complex scientific phenomena. Trusted by leading universities and research institutes worldwide.</p>
       <ul class="service-includes">
-        <li>Research-accurate modeling</li>
-        <li>Procedural Houdini simulations</li>
-        <li>Animation & rendering</li>
-        <li>Educational materials</li>
+        <li data-en="Research-accurate modeling" data-ru="Научно-точное моделирование">Research-accurate modeling</li>
+        <li data-en="Procedural Houdini simulations" data-ru="Процедурные симуляции в Houdini">Procedural Houdini simulations</li>
+        <li data-en="Animation &amp; rendering" data-ru="Анимация и рендеринг">Animation &amp; rendering</li>
+        <li data-en="Educational materials" data-ru="Учебные материалы">Educational materials</li>
       </ul>
       <div class="service-price">
-        <span class="price-from">Starting from</span>
+        <span class="price-from" data-en="Starting from" data-ru="От">Starting from</span>
         <span class="price-value">€3 000</span>
-        <span class="price-note">per project</span>
+        <span class="price-note" data-en="per project" data-ru="за проект">per project</span>
       </div>
     </div>
 
     <div class="service-card">
       <span class="service-icon">03 / AI</span>
-      <h3 class="service-name">AI Video<br>Production</h3>
-      <p class="service-desc">Next-generation content creation using Sora, Runway, and KING — combined with professional post-production for truly cinematic results.</p>
+      <h3 class="service-name" data-en="AI Video<br>Production" data-ru="AI Видео-<br>продакшн">AI Video<br>Production</h3>
+      <p class="service-desc" data-en="Next-generation content creation using Sora, Runway, and KING — combined with professional post-production for truly cinematic results." data-ru="Создание контента нового поколения с использованием Sora, Runway и KING — в сочетании с профессиональным постпродакшном для кинематографических результатов.">Next-generation content creation using Sora, Runway, and KING — combined with professional post-production for truly cinematic results.</p>
       <ul class="service-includes">
-        <li>AI generation & prompt engineering</li>
-        <li>Professional compositing</li>
-        <li>Motion graphics & titles</li>
-        <li>Series & campaign content</li>
+        <li data-en="AI generation &amp; prompt engineering" data-ru="AI-генерация и промпт-инжиниринг">AI generation &amp; prompt engineering</li>
+        <li data-en="Professional compositing" data-ru="Профессиональный композитинг">Professional compositing</li>
+        <li data-en="Motion graphics &amp; titles" data-ru="Моушн-графика и титры">Motion graphics &amp; titles</li>
+        <li data-en="Series &amp; campaign content" data-ru="Серийный и кампейновый контент">Series &amp; campaign content</li>
       </ul>
       <div class="service-price">
-        <span class="price-from">Starting from</span>
+        <span class="price-from" data-en="Starting from" data-ru="От">Starting from</span>
         <span class="price-value">€1 200</span>
-        <span class="price-note">per video</span>
+        <span class="price-note" data-en="per video" data-ru="за видео">per video</span>
       </div>
     </div>
   </div>
 
-  <p class="reveal" style="margin-top:24px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.1em;">
+  <p class="reveal" style="margin-top:24px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:0.1em;"
+    data-en="* All projects are quoted individually after brief. Prices above are entry-level estimates."
+    data-ru="* Все проекты оцениваются индивидуально после брифа. Цены выше — ориентировочные.">
     * All projects are quoted individually after brief. Prices above are entry-level estimates.
   </p>
 </section>
@@ -988,7 +1009,7 @@
 <section class="cases">
   <div class="section-header reveal">
     <span class="section-num">02</span>
-    <h2 class="section-title">Selected Work</h2>
+    <h2 class="section-title" data-en="Selected Work" data-ru="Избранные работы">Selected Work</h2>
     <div class="section-line"></div>
   </div>
 
@@ -996,7 +1017,7 @@
     <div class="case-item">
       <span class="case-num">001</span>
       <span class="case-client">Roscosmos</span>
-      <p class="case-desc">Philosophical film "Inner Cosmos" — a visual journey from observing the Universe to human consciousness. ChatGPT, Sora, King, Runway.</p>
+      <p class="case-desc" data-en='Philosophical film "Inner Cosmos" — a visual journey from observing the Universe to human consciousness. ChatGPT, Sora, King, Runway.' data-ru="Философский фильм «Внутренний Космос» — визуальное путешествие от наблюдения Вселенной к человеческому сознанию. ChatGPT, Sora, King, Runway.">Philosophical film "Inner Cosmos" — a visual journey from observing the Universe to human consciousness. ChatGPT, Sora, King, Runway.</p>
       <div class="case-tags">
         <span class="case-tag">AI Video</span>
         <span class="case-tag">Concept Film</span>
@@ -1005,7 +1026,7 @@
     <div class="case-item">
       <span class="case-num">002</span>
       <span class="case-client">Elavia Drones</span>
-      <p class="case-desc">Promo reel showcasing passenger drone design and urban flight environments. Unreal Engine, Houdini, Blender, DaVinci Resolve.</p>
+      <p class="case-desc" data-en="Promo reel showcasing passenger drone design and urban flight environments. Unreal Engine, Houdini, Blender, DaVinci Resolve." data-ru="Промо-ролик, демонстрирующий дизайн пассажирского дрона и городскую среду полётов. Unreal Engine, Houdini, Blender, DaVinci Resolve.">Promo reel showcasing passenger drone design and urban flight environments. Unreal Engine, Houdini, Blender, DaVinci Resolve.</p>
       <div class="case-tags">
         <span class="case-tag">Promo Film</span>
         <span class="case-tag">Unreal Engine</span>
@@ -1015,7 +1036,7 @@
     <div class="case-item">
       <span class="case-num">003</span>
       <span class="case-client">University of Toronto</span>
-      <p class="case-desc">High-fidelity solar surface visualization for astrophysics research — granulation, prominences, solar flares via procedural Houdini simulation.</p>
+      <p class="case-desc" data-en="High-fidelity solar surface visualization for astrophysics research — granulation, prominences, solar flares via procedural Houdini simulation." data-ru="Высокоточная визуализация поверхности Солнца для астрофизических исследований — грануляция, протуберанцы, вспышки через процедурную симуляцию в Houdini.">High-fidelity solar surface visualization for astrophysics research — granulation, prominences, solar flares via procedural Houdini simulation.</p>
       <div class="case-tags">
         <span class="case-tag">Scientific Viz</span>
         <span class="case-tag">Houdini</span>
@@ -1024,7 +1045,7 @@
     <div class="case-item">
       <span class="case-num">004</span>
       <span class="case-client">Keldysh Institute</span>
-      <p class="case-desc">Graphic models for computational mathematics research. Long-term collaboration with one of Russia's leading scientific institutions.</p>
+      <p class="case-desc" data-en="Graphic models for computational mathematics research. Long-term collaboration with one of Russia's leading scientific institutions." data-ru="Графические модели для исследований в области вычислительной математики. Долгосрочное сотрудничество с одним из ведущих научных институтов России.">Graphic models for computational mathematics research. Long-term collaboration with one of Russia's leading scientific institutions.</p>
       <div class="case-tags">
         <span class="case-tag">Scientific Viz</span>
         <span class="case-tag">Research</span>
@@ -1033,7 +1054,7 @@
     <div class="case-item">
       <span class="case-num">005</span>
       <span class="case-client">Orlyonok Center</span>
-      <p class="case-desc">Title sequence for All-Russian Youth Center promo film. Particle simulations in Houdini forming dynamic logo animation.</p>
+      <p class="case-desc" data-en="Title sequence for All-Russian Youth Center promo film. Particle simulations in Houdini forming dynamic logo animation." data-ru="Титровая заставка для промо-фильма Всероссийского детского центра. Симуляции частиц в Houdini, формирующие динамичную анимацию логотипа.">Title sequence for All-Russian Youth Center promo film. Particle simulations in Houdini forming dynamic logo animation.</p>
       <div class="case-tags">
         <span class="case-tag">Motion Graphics</span>
         <span class="case-tag">Particles</span>
@@ -1048,15 +1069,15 @@
     <div class="ai-chat-left reveal">
       <div class="ai-label">
         <span class="ai-dot"></span>
-        <span>AI Assistant — powered by Claude</span>
+        <span data-en="AI Assistant — powered by Claude" data-ru="AI-ассистент — на базе Claude">AI Assistant — powered by Claude</span>
       </div>
-      <h2 class="ai-title">Not sure what<br>you <em>need?</em></h2>
-      <p class="ai-sub">Describe your project idea and I'll tell you what's possible, what it might cost, and how to get started. No forms, no waiting.</p>
+      <h2 class="ai-title" data-en="Not sure what<br>you <em>need?</em>" data-ru="Не знаете что<br>вам <em>нужно?</em>">Not sure what<br>you <em>need?</em></h2>
+      <p class="ai-sub" data-en="Describe your project idea and I'll tell you what's possible, what it might cost, and how to get started. No forms, no waiting." data-ru="Опишите идею проекта, и я расскажу, что возможно, сколько это может стоить и как начать. Без форм, без ожидания.">Describe your project idea and I'll tell you what's possible, what it might cost, and how to get started. No forms, no waiting.</p>
       <div class="ai-hints">
-        <button class="ai-hint" onclick="sendHint(this)">What can you do for a drone startup?</button>
-        <button class="ai-hint" onclick="sendHint(this)">I need a 60-sec promo, what's the price?</button>
-        <button class="ai-hint" onclick="sendHint(this)">Can you visualize scientific data?</button>
-        <button class="ai-hint" onclick="sendHint(this)">What's the difference between AI video and VFX?</button>
+        <button class="ai-hint" data-en="What can you do for a drone startup?" data-ru="Что вы можете сделать для дрон-стартапа?" onclick="sendHint(this)">What can you do for a drone startup?</button>
+        <button class="ai-hint" data-en="I need a 60-sec promo, what's the price?" data-ru="Нужен 60-секундный промо — сколько стоит?" onclick="sendHint(this)">I need a 60-sec promo, what's the price?</button>
+        <button class="ai-hint" data-en="Can you visualize scientific data?" data-ru="Можно ли визуализировать научные данные?" onclick="sendHint(this)">Can you visualize scientific data?</button>
+        <button class="ai-hint" data-en="What's the difference between AI video and VFX?" data-ru="В чём разница между AI-видео и VFX?" onclick="sendHint(this)">What's the difference between AI video and VFX?</button>
       </div>
     </div>
     <div class="ai-chat-right reveal">
@@ -1064,11 +1085,14 @@
         <div class="ai-messages" id="aiMessages">
           <div class="ai-msg ai-msg--bot">
             <div class="ai-msg-avatar">AR</div>
-            <div class="ai-msg-bubble">Hi! I'm Alexander's AI assistant. Tell me about your project — I'll help figure out the right approach, timeline, and budget. What are you working on?</div>
+            <div class="ai-msg-bubble" id="botGreeting" data-en="Hi! I'm Alexander's AI assistant. Tell me about your project — I'll help figure out the right approach, timeline, and budget. What are you working on?" data-ru="Привет! Я AI-ассистент Александра. Расскажите о вашем проекте — помогу разобраться с подходом, сроками и бюджетом. Над чем работаете?">Hi! I'm Alexander's AI assistant. Tell me about your project — I'll help figure out the right approach, timeline, and budget. What are you working on?</div>
           </div>
         </div>
         <div class="ai-input-row">
-          <input class="ai-input" id="aiInput" type="text" placeholder="Describe your project..." autocomplete="off" onkeydown="if(event.key==='Enter') sendMessage()">
+          <input class="ai-input" id="aiInput" type="text"
+            data-en-ph="Describe your project..."
+            data-ru-ph="Опишите ваш проект..."
+            placeholder="Describe your project..." autocomplete="off" onkeydown="if(event.key==='Enter') sendMessage()">
           <button class="ai-send" onclick="sendMessage()">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
               <path d="M1 8H15M15 8L9 2M15 8L9 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1084,30 +1108,32 @@
 <section class="about" id="about">
   <div class="section-header reveal">
     <span class="section-num">03</span>
-    <h2 class="section-title">About</h2>
+    <h2 class="section-title" data-en="About" data-ru="Обо мне">About</h2>
     <div class="section-line"></div>
   </div>
 
   <div class="about-inner">
-    <div class="about-text reveal">
+    <div class="about-text reveal"
+      data-en="I've spent over two decades at the intersection of <strong>art and technology</strong> — building visual systems for games, science, and screen. My work ranges from indie game development to <strong>government and academic commissions</strong>. I don't just execute briefs; I bring technical depth that most visual artists simply don't have. Houdini, Unreal Engine, Python scripting, machine learning — it's one pipeline, not a patchwork of freelancers. Every frame I deliver is the result of <strong>full ownership</strong> from concept to final render."
+      data-ru="Более двух десятилетий я работаю на пересечении <strong>искусства и технологий</strong> — создаю визуальные системы для игр, науки и кино. Мои работы варьируются от инди-геймдева до <strong>государственных и академических заказов</strong>. Я не просто выполняю брифы — я привношу техническую глубину, которой у большинства визуальных художников просто нет. Houdini, Unreal Engine, скриптинг на Python, машинное обучение — единый пайплайн, а не мозаика из фрилансеров. Каждый кадр — результат <strong>полного владения</strong> процессом от концепции до финального рендера.">
       I've spent over two decades at the intersection of <strong>art and technology</strong> — building visual systems for games, science, and screen. My work ranges from indie game development to <strong>government and academic commissions</strong>. I don't just execute briefs; I bring technical depth that most visual artists simply don't have. Houdini, Unreal Engine, Python scripting, machine learning — it's one pipeline, not a patchwork of freelancers. Every frame I deliver is the result of <strong>full ownership</strong> from concept to final render.
     </div>
     <div class="about-stats reveal">
       <div class="stat">
         <div class="stat-value">20+</div>
-        <div class="stat-label">Years in<br>computer graphics</div>
+        <div class="stat-label" data-en="Years in<br>computer graphics" data-ru="Лет в<br>компьютерной графике">Years in<br>computer graphics</div>
       </div>
       <div class="stat">
         <div class="stat-value">3</div>
-        <div class="stat-label">Major scientific<br>institutions</div>
+        <div class="stat-label" data-en="Major scientific<br>institutions" data-ru="Крупных научных<br>института">Major scientific<br>institutions</div>
       </div>
       <div class="stat">
         <div class="stat-value">8+</div>
-        <div class="stat-label">Professional<br>tools mastered</div>
+        <div class="stat-label" data-en="Professional<br>tools mastered" data-ru="Профессиональных<br>инструментов">Professional<br>tools mastered</div>
       </div>
       <div class="stat">
         <div class="stat-value">∞</div>
-        <div class="stat-label">Full cycle —<br>concept to delivery</div>
+        <div class="stat-label" data-en="Full cycle —<br>concept to delivery" data-ru="Полный цикл —<br>от концепции до сдачи">Full cycle —<br>concept to delivery</div>
       </div>
     </div>
   </div>
@@ -1117,7 +1143,7 @@
 <section class="stack">
   <div class="section-header reveal">
     <span class="section-num">04</span>
-    <h2 class="section-title">Tech Stack</h2>
+    <h2 class="section-title" data-en="Tech Stack" data-ru="Технологии">Tech Stack</h2>
     <div class="section-line"></div>
   </div>
 
@@ -1125,42 +1151,42 @@
     <div class="stack-item">
       <div class="stack-name">Houdini</div>
       <div class="stack-role">VFX · Simulation · Procedural</div>
-      <div class="stack-desc">Primary tool for complex simulations — fire, water, smoke, destruction, particles. Used across film, games, and scientific projects.</div>
+      <div class="stack-desc" data-en="Primary tool for complex simulations — fire, water, smoke, destruction, particles. Used across film, games, and scientific projects." data-ru="Основной инструмент для сложных симуляций — огонь, вода, дым, разрушения, частицы. Применяется в кино, играх и научных проектах.">Primary tool for complex simulations — fire, water, smoke, destruction, particles. Used across film, games, and scientific projects.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">Unreal Engine</div>
       <div class="stack-role">Real-time · Games · VR</div>
-      <div class="stack-desc">High-quality real-time rendering, materials, shaders, interactive VFX. Games and immersive experiences.</div>
+      <div class="stack-desc" data-en="High-quality real-time rendering, materials, shaders, interactive VFX. Games and immersive experiences." data-ru="Высококачественный рендер в реальном времени, материалы, шейдеры, интерактивные VFX. Игры и иммерсивные экспериенсы.">High-quality real-time rendering, materials, shaders, interactive VFX. Games and immersive experiences.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">Blender</div>
       <div class="stack-role">Modeling · Animation · Render</div>
-      <div class="stack-desc">Versatile tool for 3D modeling, sculpting, animation and rendering. Speed and flexibility for asset creation.</div>
+      <div class="stack-desc" data-en="Versatile tool for 3D modeling, sculpting, animation and rendering. Speed and flexibility for asset creation." data-ru="Универсальный инструмент для 3D-моделирования, скульптинга, анимации и рендеринга. Скорость и гибкость при создании ассетов.">Versatile tool for 3D modeling, sculpting, animation and rendering. Speed and flexibility for asset creation.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">Nuke</div>
       <div class="stack-role">Compositing · CGI Integration</div>
-      <div class="stack-desc">Professional compositing — complex scene assembly, CGI integration, precise color correction.</div>
+      <div class="stack-desc" data-en="Professional compositing — complex scene assembly, CGI integration, precise color correction." data-ru="Профессиональный композитинг — сложная сборка сцен, интеграция CGI, точная цветокоррекция.">Professional compositing — complex scene assembly, CGI integration, precise color correction.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">After Effects</div>
       <div class="stack-role">Motion Graphics · Post</div>
-      <div class="stack-desc">Motion graphics, title sequences, promo reels with attention to every detail.</div>
+      <div class="stack-desc" data-en="Motion graphics, title sequences, promo reels with attention to every detail." data-ru="Моушн-графика, титровые заставки, промо-ролики с вниманием к каждой детали.">Motion graphics, title sequences, promo reels with attention to every detail.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">AI Tools</div>
       <div class="stack-role">Sora · Runway · KING</div>
-      <div class="stack-desc">Cutting-edge AI video generation combined with professional compositing for cinematic results.</div>
+      <div class="stack-desc" data-en="Cutting-edge AI video generation combined with professional compositing for cinematic results." data-ru="Передовая AI-генерация видео в сочетании с профессиональным композитингом для кинематографических результатов.">Cutting-edge AI video generation combined with professional compositing for cinematic results.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">Fusion 360</div>
       <div class="stack-role">Parametric · Technical</div>
-      <div class="stack-desc">Precision technical modeling and prototyping for engineering-accurate visualizations.</div>
+      <div class="stack-desc" data-en="Precision technical modeling and prototyping for engineering-accurate visualizations." data-ru="Точное техническое моделирование и прототипирование для инженерно-точных визуализаций.">Precision technical modeling and prototyping for engineering-accurate visualizations.</div>
     </div>
     <div class="stack-item">
       <div class="stack-name">Python</div>
       <div class="stack-role">Scripting · Automation</div>
-      <div class="stack-desc">Custom tools and pipeline automation — optimizing workflows across all applications.</div>
+      <div class="stack-desc" data-en="Custom tools and pipeline automation — optimizing workflows across all applications." data-ru="Кастомные инструменты и автоматизация пайплайна — оптимизация рабочих процессов в любых приложениях.">Custom tools and pipeline automation — optimizing workflows across all applications.</div>
     </div>
   </div>
 </section>
@@ -1169,18 +1195,18 @@
 <section class="contact" id="contact">
   <div class="section-header reveal">
     <span class="section-num">05</span>
-    <h2 class="section-title">Get in Touch</h2>
+    <h2 class="section-title" data-en="Get in Touch" data-ru="Контакт">Get in Touch</h2>
     <div class="section-line"></div>
   </div>
 
   <div class="contact-inner">
     <div class="reveal">
-      <h3 class="contact-tagline">Let's create something <em>extraordinary</em></h3>
-      <p class="contact-sub">Tell me about your project — what it is, when you need it, and roughly what budget you're working with. I'll respond within 24 hours with a realistic assessment.</p>
+      <h3 class="contact-tagline" data-en="Let's create something <em>extraordinary</em>" data-ru="Давайте создадим нечто <em>выдающееся</em>">Let's create something <em>extraordinary</em></h3>
+      <p class="contact-sub" data-en="Tell me about your project — what it is, when you need it, and roughly what budget you're working with. I'll respond within 24 hours with a realistic assessment." data-ru="Расскажите о проекте — что нужно, когда и примерный бюджет. Я отвечу в течение 24 часов с реалистичной оценкой.">Tell me about your project — what it is, when you need it, and roughly what budget you're working with. I'll respond within 24 hours with a realistic assessment.</p>
       <div class="contact-links">
         <a href="https://t.me/arybashov" class="contact-link" target="_blank">
           <span class="contact-link-icon">Telegram</span>
-          <span class="contact-link-text">@arybashov — fastest response</span>
+          <span class="contact-link-text" data-en="@arybashov — fastest response" data-ru="@arybashov — быстрый ответ">@arybashov — fastest response</span>
         </a>
         <a href="https://alexanderrybashov.artstation.com/" class="contact-link" target="_blank">
           <span class="contact-link-icon">ArtStation</span>
@@ -1188,7 +1214,7 @@
         </a>
         <a href="https://www.youtube.com/channel/UChwymOtxgOrdCRTa1yj_3QA" class="contact-link" target="_blank">
           <span class="contact-link-icon">YouTube</span>
-          <span class="contact-link-text">Full portfolio & reels</span>
+          <span class="contact-link-text" data-en="Full portfolio &amp; reels" data-ru="Полное портфолио и ролики">Full portfolio &amp; reels</span>
         </a>
       </div>
     </div>
@@ -1196,8 +1222,8 @@
     <form class="contact-form reveal" onsubmit="handleSubmit(event)">
       <div class="form-row">
         <div class="form-group">
-          <label class="form-label">Name</label>
-          <input class="form-input" type="text" placeholder="Your name" required>
+          <label class="form-label" data-en="Name" data-ru="Имя">Name</label>
+          <input class="form-input" type="text" data-en-ph="Your name" data-ru-ph="Ваше имя" placeholder="Your name" required>
         </div>
         <div class="form-group">
           <label class="form-label">Email</label>
@@ -1205,20 +1231,20 @@
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Project type</label>
-        <select class="form-select">
-          <option value="">Select type...</option>
-          <option>Promo Video</option>
-          <option>Scientific Visualization</option>
-          <option>AI Video Production</option>
-          <option>Game Development</option>
-          <option>Other</option>
+        <label class="form-label" data-en="Project type" data-ru="Тип проекта">Project type</label>
+        <select class="form-select" id="selectType">
+          <option value="" data-en="Select type..." data-ru="Выберите тип...">Select type...</option>
+          <option data-en="Promo Video" data-ru="Промо-ролик">Promo Video</option>
+          <option data-en="Scientific Visualization" data-ru="Научная визуализация">Scientific Visualization</option>
+          <option data-en="AI Video Production" data-ru="AI Видеопродакшн">AI Video Production</option>
+          <option data-en="Game Development" data-ru="Разработка игр">Game Development</option>
+          <option data-en="Other" data-ru="Другое">Other</option>
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Budget range</label>
-        <select class="form-select">
-          <option value="">Select budget...</option>
+        <label class="form-label" data-en="Budget range" data-ru="Бюджет">Budget range</label>
+        <select class="form-select" id="selectBudget">
+          <option value="" data-en="Select budget..." data-ru="Выберите бюджет...">Select budget...</option>
           <option>€1 000 – €3 000</option>
           <option>€3 000 – €7 000</option>
           <option>€7 000 – €15 000</option>
@@ -1226,16 +1252,16 @@
         </select>
       </div>
       <div class="form-group">
-        <label class="form-label">Tell me about your project</label>
-        <textarea class="form-textarea" rows="5" placeholder="Describe your project, goals, timeline..."></textarea>
+        <label class="form-label" data-en="Tell me about your project" data-ru="Расскажите о проекте">Tell me about your project</label>
+        <textarea class="form-textarea" rows="5" data-en-ph="Describe your project, goals, timeline..." data-ru-ph="Опишите проект, цели, сроки..." placeholder="Describe your project, goals, timeline..."></textarea>
       </div>
-      <button type="submit" class="form-submit">Send Message →</button>
+      <button type="submit" class="form-submit" data-en="Send Message →" data-ru="Отправить →">Send Message →</button>
     </form>
   </div>
 </section>
 
 <footer>
-  <p>© 2025 Alexander Rybashov. All rights reserved.</p>
+  <p data-en="© 2025 Alexander Rybashov. All rights reserved." data-ru="© 2025 Александр Рыбашов. Все права защищены.">© 2025 Alexander Rybashov. All rights reserved.</p>
   <div class="footer-links">
     <a href="https://t.me/arybashov" target="_blank">Telegram</a>
     <a href="https://alexanderrybashov.artstation.com/" target="_blank">ArtStation</a>
@@ -1281,8 +1307,41 @@
 
   document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
-  // AI Chat
-  const SYSTEM_PROMPT = `You are an AI assistant on Alexander Rybashov's portfolio website. Alexander is a senior VFX artist and AI video specialist with 20+ years of experience.
+  // ── Language switcher ──────────────────────────────────────────
+  let currentLang = localStorage.getItem('lang') || 'en';
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('lang', lang);
+    document.documentElement.lang = lang;
+
+    // innerHTML elements
+    document.querySelectorAll('[data-en][data-ru]').forEach(el => {
+      el.innerHTML = lang === 'ru' ? el.dataset.ru : el.dataset.en;
+    });
+
+    // placeholder attributes
+    document.querySelectorAll('[data-en-ph][data-ru-ph]').forEach(el => {
+      el.placeholder = lang === 'ru' ? el.dataset.ruPh : el.dataset.enPh;
+    });
+
+    // select options
+    document.querySelectorAll('select option[data-en][data-ru]').forEach(opt => {
+      opt.textContent = lang === 'ru' ? opt.dataset.ru : opt.dataset.en;
+    });
+
+    document.getElementById('langBtn').textContent = lang === 'ru' ? 'EN' : 'RU';
+
+    // update chat system prompt language hint
+    chatHistory[0].content = lang === 'ru' ? SYSTEM_PROMPT_RU : SYSTEM_PROMPT_EN;
+  }
+
+  function toggleLang() {
+    setLang(currentLang === 'en' ? 'ru' : 'en');
+  }
+
+  // ── AI Chat ────────────────────────────────────────────────────
+  const SYSTEM_PROMPT_EN = `You are an AI assistant on Alexander Rybashov's portfolio website. Alexander is a senior VFX artist and AI video specialist with 20+ years of experience.
 
 His services and pricing:
 - Promo Video (30-60 sec): from €2,500. Includes concept, 3D animation, VFX, compositing, up to 4K. Tools: Unreal Engine, Houdini, Blender, DaVinci.
@@ -1295,9 +1354,21 @@ Tech stack: Houdini (VFX, simulations), Unreal Engine (real-time, games, VR), Bl
 
 Your job: help visitors understand what Alexander can do for them, estimate costs, and encourage them to reach out via Telegram (@arybashov). Be concise, friendly, and professional. Keep answers under 100 words unless a detailed breakdown is needed. Always end with an invitation to discuss further.`;
 
-  // chatHistory in OpenAI format — system message always first
+  const SYSTEM_PROMPT_RU = `Ты AI-ассистент на сайте-портфолио Александра Рыбашова. Александр — старший VFX-художник и специалист по AI-видео с 20+ годами опыта.
+
+Услуги и цены:
+- Промо-ролик (30-60 сек): от €2 500. Включает концепцию, 3D-анимацию, VFX, композитинг, до 4K. Инструменты: Unreal Engine, Houdini, Blender, DaVinci.
+- Научная визуализация: от €3 000. Точные 3D-модели и симуляции для науки и образования. Работал с Университетом Торонто, Институтом Келдыша.
+- AI Видеопродакшн: от €1 200 за видео. Sora, Runway, KING + профессиональный постпродакшн. Идеально для брендов и агентств.
+
+Клиенты: Роскосмос, Elavia Drones, Университет Торонто, Институт прикладной математики Келдыша, ВДЦ «Орлёнок».
+
+Технологии: Houdini (VFX, симуляции), Unreal Engine (real-time, игры, VR), Blender (моделирование, анимация), Nuke (композитинг), After Effects (моушн-графика), Fusion 360 (техническое моделирование), Python (скриптинг), AI-инструменты (Sora, Runway, KING).
+
+Твоя задача: помочь посетителям понять, что Александр может сделать для них, оценить стоимость и направить в Telegram (@arybashov). Отвечай кратко, дружелюбно и профессионально. Держи ответы до 100 слов. Всегда заканчивай приглашением обсудить подробнее. Отвечай на русском языке.`;
+
   let chatHistory = [
-    { role: 'system', content: SYSTEM_PROMPT }
+    { role: 'system', content: SYSTEM_PROMPT_EN }
   ];
 
   async function sendMessage() {
@@ -1309,27 +1380,29 @@ Your job: help visitors understand what Alexander can do for them, estimate cost
     chatHistory.push({ role: 'user', content: text });
     const typingId = appendTyping();
     try {
-      // PROXY_URL — your Cloudflare Worker URL (see README)
       const PROXY_URL = 'https://arybashov-bot.arybashov.workers.dev';
       const res = await fetch(PROXY_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'openrouter/auto',   // auto-selects best free model
+          model: 'openrouter/auto',
           max_tokens: 300,
-          messages: chatHistory       // OpenAI format: system + user/assistant
+          messages: chatHistory
         })
       });
       const data = await res.json();
       removeTyping(typingId);
-      // OpenAI-compatible response format
       const reply = data.choices?.[0]?.message?.content
-        || "I couldn't process that. Please reach out directly via Telegram @arybashov.";
+        || (currentLang === 'ru'
+          ? 'Не удалось обработать запрос. Напишите напрямую в Telegram: @arybashov'
+          : "I couldn't process that. Please reach out directly via Telegram @arybashov.");
       appendMessage('bot', reply);
       chatHistory.push({ role: 'assistant', content: reply });
     } catch(e) {
       removeTyping(typingId);
-      appendMessage('bot', 'Something went wrong. Please reach out directly via Telegram: @arybashov');
+      appendMessage('bot', currentLang === 'ru'
+        ? 'Что-то пошло не так. Напишите напрямую в Telegram: @arybashov'
+        : 'Something went wrong. Please reach out directly via Telegram: @arybashov');
     }
   }
 
@@ -1370,16 +1443,19 @@ Your job: help visitors understand what Alexander can do for them, estimate cost
   function handleSubmit(e) {
     e.preventDefault();
     const btn = e.target.querySelector('.form-submit');
-    btn.textContent = 'Sent ✓';
+    btn.textContent = currentLang === 'ru' ? 'Отправлено ✓' : 'Sent ✓';
     btn.style.background = 'var(--accent)';
     btn.style.color = 'var(--black)';
     setTimeout(() => {
-      btn.textContent = 'Send Message →';
+      btn.textContent = currentLang === 'ru' ? 'Отправить →' : 'Send Message →';
       btn.style.background = '';
       btn.style.color = '';
       e.target.reset();
     }, 3000);
   }
+
+  // Init language
+  setLang(currentLang);
 </script>
 </body>
 </html>
